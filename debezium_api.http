@@ -1,0 +1,163 @@
+GET localhost:8083/connectors/
+
+### Add postgres connector
+POST http://localhost:8083/connectors/
+Content-Type: application/json
+
+{
+  "name": "orderdb-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "order-db",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "order_service",
+    "database.dbname" : "cafe_order",
+    "database.server.name": "orderdb",
+    "table.include.list": "public.cafe_order",
+    "snapshot.mode": "exported",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "poll.interval.ms": "100",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+  }
+}
+
+
+### Add postgres connector for payments
+POST http://localhost:8083/connectors/
+Content-Type: application/json
+
+{
+  "name": "paymentdb-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "payment-db",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "payment_service",
+    "database.dbname" : "cafe_payment",
+    "database.server.name": "paymentdb",
+    "table.include.list": "public.payment_order",
+    "snapshot.mode": "exported",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "poll.interval.ms": "100",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+  }
+}
+
+
+### Add postgres connector for kitchen
+POST http://localhost:8083/connectors/
+Content-Type: application/json
+
+{
+  "name": "kitchendb-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "kitchen-db",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "kitchen_service",
+    "database.dbname" : "cafe_kitchen",
+    "database.server.name": "kitchen",
+    "table.include.list": "public.kitchen_order",
+    "snapshot.mode": "exported",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "poll.interval.ms": "100",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+  }
+}
+
+### Add postgres connector for kitchen
+POST http://localhost:8083/connectors/
+Content-Type: application/json
+
+{
+  "name": "deliverydb-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "delivery-db",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "delivery_service",
+    "database.dbname" : "cafe_delivery",
+    "database.server.name": "delivery",
+    "table.include.list": "public.delivery_order",
+    "snapshot.mode": "exported",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "poll.interval.ms": "100",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+  }
+}
+
+
+#"key.converter": "org.apache.kafka.connect.storage.StringConverter",
+#"value.converter": "org.apache.kafka.connect.storage.StringConverter",
+
+###
+GET http://localhost:8083/connectors/orderdb-connector
+
+###
+GET http://localhost:8080/orders
+
+
+###
+DELETE http://localhost:8083/connectors/orderdb-connector
+###
+DELETE http://localhost:8083/connectors/outbox-connector
+
+
+#  "kitchendb-connector",
+#  "deliverydb-connector",
+#  "orderdb-connector",
+#  "paymentdb-connector",
+#  "outbox-connector"
+#]
+
+
+
+
+### Add postgres connector for kitchen
+POST http://localhost:8083/connectors/
+Content-Type: application/json
+
+{
+  "name": "outbox-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "order-db",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "order_service",
+    "database.dbname" : "cafe_order",
+    "database.server.name": "order",
+    "table.include.list": "public.saga",
+    "snapshot.mode": "exported",
+    "key.converter.schemas.enable": false,
+    "value.converter.schemas.enable": false,
+    "poll.interval.ms": "100",
+    "transforms":"outbox",
+    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+    "transforms.outbox.table.field.event.key": "aggregate_id",
+    "transforms.outbox.table.field.event.payload.id": "aggregate_id",
+    "transforms.outbox.route.by.field": "target",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}
+
+#"value.converter.delegate.converter.type": "org.apache.kafka.connect.json.JsonConverter",
+#"value.converter.delegate.converter.type.schemas.enable": "false"

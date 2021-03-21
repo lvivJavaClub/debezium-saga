@@ -1,0 +1,1 @@
+ALTER TABLE saga ADD COLUMN target varchar(100) NOT NULL;
